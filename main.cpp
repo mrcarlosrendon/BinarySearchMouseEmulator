@@ -5,7 +5,7 @@
 
 #define Left					VK_LEFT
 #define Right					VK_RIGHT
-#define Up						VK_UP
+#define Up					VK_UP
 #define Down					VK_DOWN
 // CapsLock left click
 #define LeftClick				VK_CAPITAL
@@ -32,7 +32,7 @@ LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam);
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHook, hInstance, 0);
-	if (hHook == NULL) 
+	if (hHook == NULL)
 	{
 		return -1;
 	}
@@ -42,27 +42,27 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (nCode == HC_ACTION) 
+	if (nCode == HC_ACTION)
 	{
 		if (KeyDown(wParam))
 		{
 			HandleKey(nCode, wParam, lParam);
 		}
-		if (keyboardMouseEnabled) 
+		if (keyboardMouseEnabled)
 		{
 			// don't pass keypress to Windows in general when toggled
 			return 1;
 		}
 	}
-	return CallNextHookEx(hHook, nCode, wParam, lParam);		
+	return CallNextHookEx(hHook, nCode, wParam, lParam);
 }
 
-bool KeyDown(WPARAM wParam) 
+bool KeyDown(WPARAM wParam)
 {
 	return (wParam == WM_SYSKEYDOWN || wParam == WM_KEYDOWN);
 }
 
-LONG RectangleHeight(RECT r) 
+LONG RectangleHeight(RECT r)
 {
 	return r.bottom - r.top;
 }
@@ -73,12 +73,12 @@ LONG RectangleWidth(RECT r)
 }
 
 void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
-{	
+{
 	POINT currentPoint;
 	GetCursorPos(&currentPoint);
 	KBDLLHOOKSTRUCT *hookStruct = (KBDLLHOOKSTRUCT *)lParam;
 	DWORD keyCode = hookStruct->vkCode;
-	
+
 	if(keyCode == KeyboardMouseToggleKey)
 	{
 		keyboardMouseEnabled = !keyboardMouseEnabled;
@@ -89,36 +89,36 @@ void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 		LONG halfHeight = RectangleHeight(currentRect) / 2;
 		LONG halfWidth = RectangleWidth(currentRect) / 2;
-		if (keyCode == Reset) 
+		if (keyCode == Reset)
 		{
 			GetWindowRect(GetDesktopWindow(), &currentRect);
 			SetCursorPos(RectangleWidth(currentRect)/2, RectangleHeight(currentRect)/2);
 		}
-		else if (keyCode == LeftClick) 
+		else if (keyCode == LeftClick)
 		{
-			if (leftClick) 
+			if (leftClick)
 			{
 				leftClick = false;
 				mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 			}
-			else 
+			else
 			{
 				leftClick = true;
 				mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-			}				
+			}
 		}
-		else if (keyCode == RightClick) 
+		else if (keyCode == RightClick)
 		{
-			if (rightClick) 
+			if (rightClick)
 			{
 				rightClick = false;
 				mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
 			}
-			else 
+			else
 			{
 				rightClick = true;
 				mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
-			}			
+			}
 		}
 		else if (keyCode == Up)
 		{
@@ -143,6 +143,6 @@ void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
 			currentRect.left += halfWidth;
 			SetCursorPos(currentPoint.x + (RectangleWidth(currentRect)/2),
 						currentPoint.y);
-		}		
+		}
 	}
 }
