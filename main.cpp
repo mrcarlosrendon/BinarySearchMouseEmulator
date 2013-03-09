@@ -11,6 +11,10 @@
 #define LeftClick				VK_CAPITAL
 // ScrollLock right click
 #define RightClick				VK_SCROLL
+// Scroll Up = Page Up
+#define ScrollUp				VK_PRIOR
+// Scroll Down = Page Down
+#define ScrollDown				VK_NEXT
 // Take me HOME!
 #define Reset					VK_HOME
 // F12 to turn on and off
@@ -124,6 +128,16 @@ void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
 				rightClick = true;
 				mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
 			}
+		}
+		else if (keyCode == ScrollUp) 
+		{
+			DWORD scroll_amount = +WHEEL_DELTA;
+			mouse_event(MOUSEEVENTF_WHEEL, 0, 0, scroll_amount, 0);
+		}
+		else if (keyCode == ScrollDown)
+		{
+			DWORD scroll_amount = -WHEEL_DELTA;
+			mouse_event(MOUSEEVENTF_WHEEL, 0, 0, scroll_amount, 0);
 		}
 		else if (keyCode == Up)
 		{
