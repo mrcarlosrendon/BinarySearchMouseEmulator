@@ -18,6 +18,7 @@
 
 HHOOK hHook;
 bool keyboardMouseEnabled = false;
+bool keyboardMouseJustDisabled = false;
 bool leftClick = false;
 bool rightClick = false;
 RECT currentRect;
@@ -48,8 +49,9 @@ LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
 		{
 			HandleKey(nCode, wParam, lParam);
 		}
-		if (keyboardMouseEnabled)
+		if (keyboardMouseEnabled || keyboardMouseJustDisabled)
 		{
+			keyboardMouseJustDisabled = false;
 			// don't pass keypress to Windows in general when toggled
 			return 1;
 		}
@@ -82,7 +84,10 @@ void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
 	if(keyCode == KeyboardMouseToggleKey)
 	{
 		keyboardMouseEnabled = !keyboardMouseEnabled;
-		return;
+		if (!keyboardMouseEnabled) 
+		{
+			keyboardMouseJustDisabled = true;
+		}
 	}
 
 	if(keyboardMouseEnabled)
