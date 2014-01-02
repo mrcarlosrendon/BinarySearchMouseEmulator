@@ -2,6 +2,14 @@
 
 #include <stdio.h>
 #include <windows.h>
+// for notification area
+#include <ShellAPI.h>
+// for icon loading 
+#include <Commctrl.h>
+// for secure strings
+#include <strsafe.h>
+// for resources
+#include "resource.h"
 
 #define Left					VK_LEFT
 #define Right					VK_RIGHT
@@ -20,6 +28,7 @@
 // F12 to turn on and off
 #define KeyboardMouseToggleKey	VK_F12
 
+HINSTANCE g_hInstance;
 HHOOK hHook;
 bool keyboardMouseEnabled = false;
 bool keyboardMouseJustDisabled = false;
@@ -32,17 +41,57 @@ bool KeyDown(WPARAM wParam);
 LONG RectangleHeight(RECT r);
 LONG RectangleWidth(RECT r);
 void HandleKey(int nCode, WPARAM wParam, LPARAM lParam);
+void DisplayNotificationIcon();
+void HideNotificationIcon();
 LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WindowsMsg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	g_hInstance = hInstance;
 	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHook, hInstance, 0);
 	if (hHook == NULL)
 	{
 		return -1;
-	}
+	}	
 	while (GetMessage(NULL, NULL, 0, 0));
 	return UnhookWindowsHookEx(hHook);
+}
+
+LRESULT CALLBACK WindowsMsg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+{
+	return 0;
+}
+
+void DisplayNotificationIcon() 
+{
+	NOTIFYICONDATA nid = {};
+	nid.cbSize = sizeof(nid); // ONLY supposed to WORK FOR VISTA or later	
+	nid.uFlags = NIF_ICON | NIF_TIP;
+	nid.uID = 1; // operate on icon 1
+	StringCchCopy(nid.szTip, ARRAYSIZE(nid.szTip), TEXT("Mouse Emulation Enabled"));
+	if (leftClick && rightClick) {
+		nid.hIcon = LoadIcon(g_hInstance, MAKEINTRESOURCE(IDI_ICON_LEFTRIGHT));
+	}
+	else if (leftClick) {
+		nid.hIcon = LoadIcon(g_hInstance, MAKEINTRESOURCE(IDI_ICON_LEFT));
+	}
+	else if (rightClick) {
+		nid.hIcon = LoadIcon(g_hInstance, MAKEINTRESOURCE(IDI_ICON_RIGHT));
+	}
+	else {
+		nid.hIcon = LoadIcon(g_hInstance, MAKEINTRESOURCE(IDI_ICON));
+	}
+
+	BOOL success = Shell_NotifyIcon(NIM_ADD, &nid);
+}
+
+void HideNotificationIcon() 
+{
+	NOTIFYICONDATA nid = {};
+	nid.cbSize = sizeof(nid); // ONLY supposed to WORK FOR VISTA or later		
+	nid.uID = 1; // operate on icon 1
+	BOOL success = Shell_NotifyIcon(NIM_DELETE, &nid);
 }
 
 LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
@@ -163,5 +212,10 @@ void HandleKey(int nCode, WPARAM wParam, LPARAM lParam)
 			SetCursorPos(currentPoint.x + (RectangleWidth(currentRect)/2),
 						currentPoint.y);
 		}
+		DisplayNotificationIcon();
+	}
+	else 
+	{
+		HideNotificationIcon();
 	}
 }
