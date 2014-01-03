@@ -82,8 +82,8 @@ void DisplayNotificationIcon()
 	else {
 		nid.hIcon = LoadIcon(g_hInstance, MAKEINTRESOURCE(IDI_ICON));
 	}
-
-	BOOL success = Shell_NotifyIcon(NIM_ADD, &nid);
+	Shell_NotifyIcon(NIM_ADD, &nid);
+	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
 void HideNotificationIcon() 
@@ -91,7 +91,7 @@ void HideNotificationIcon()
 	NOTIFYICONDATA nid = {};
 	nid.cbSize = sizeof(nid); // ONLY supposed to WORK FOR VISTA or later		
 	nid.uID = 1; // operate on icon 1
-	BOOL success = Shell_NotifyIcon(NIM_DELETE, &nid);
+	Shell_NotifyIcon(NIM_DELETE, &nid);
 }
 
 LRESULT CALLBACK KeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
