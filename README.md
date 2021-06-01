@@ -12,7 +12,7 @@ Press *Home* to center the mouse cursor on your screen
 
 *Use arrow keys to control the mouse*. If you get stuck just press Home again.
 
-They way to get where you want is to always press the arrow key in the direction you need the mouse to move to get where you want to go. The mouse may overshoot, this is okay, now you just press the arrow key in the opposite direction until you arrive or you overshoot again. Notice that the distance the cursor moves is halved each move along the same axis. This binary search allows for rapid and precise movement of the mouse using the keyboard.
+The way to get where you want is to always press the arrow key in the direction you need the mouse to move to get where you want to go. The mouse may overshoot, this is okay, now you just press the arrow key in the opposite direction until you arrive or you overshoot again. Notice that the distance the cursor moves is halved each move along the same axis. This binary search allows for rapid and precise movement of the mouse using the keyboard.
 
 Press *Caps Lock* to left-click. 
 
